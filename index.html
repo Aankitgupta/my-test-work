@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sales Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Sales performance</p>
+          <h1>Executive sales dashboard</h1>
+          <p class="hero__summary">
+            Track revenue, conversion, pipeline health, and top-performing products at a glance.
+          </p>
+        </div>
+        <section class="hero__card" aria-label="Quarterly target progress">
+          <span class="hero__card-label">Quarter target</span>
+          <strong id="target-progress">0%</strong>
+          <div class="progress" aria-hidden="true">
+            <span id="target-progress-bar"></span>
+          </div>
+          <small id="target-progress-detail"></small>
+        </section>
+      </header>
+
+      <section class="kpi-grid" aria-label="Key sales metrics">
+        <article class="kpi-card">
+          <span>Total revenue</span>
+          <strong id="revenue-total">$0</strong>
+          <small id="revenue-change"></small>
+        </article>
+        <article class="kpi-card">
+          <span>New customers</span>
+          <strong id="new-customers">0</strong>
+          <small id="customer-change"></small>
+        </article>
+        <article class="kpi-card">
+          <span>Average deal size</span>
+          <strong id="average-deal">$0</strong>
+          <small id="average-deal-change"></small>
+        </article>
+        <article class="kpi-card">
+          <span>Win rate</span>
+          <strong id="win-rate">0%</strong>
+          <small id="win-rate-change"></small>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel panel--large">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Revenue trend</p>
+              <h2>Monthly sales</h2>
+            </div>
+            <span class="badge">FY 2026</span>
+          </div>
+          <div id="revenue-chart" class="bar-chart" role="img" aria-label="Monthly revenue bar chart"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Channels</p>
+              <h2>Sales mix</h2>
+            </div>
+          </div>
+          <div id="channel-list" class="channel-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Regions</p>
+              <h2>Regional performance</h2>
+            </div>
+          </div>
+          <div id="region-list" class="metric-list"></div>
+        </article>
+
+        <article class="panel panel--large">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Pipeline</p>
+              <h2>Open opportunities</h2>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Account</th>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Close date</th>
+                </tr>
+              </thead>
+              <tbody id="pipeline-table"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Products</p>
+              <h2>Top sellers</h2>
+            </div>
+          </div>
+          <div id="product-list" class="metric-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
