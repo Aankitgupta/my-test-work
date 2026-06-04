@@ -1,0 +1,16 @@
+{
+  "name": "dental-intelligence-pitch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prospect pitch deck (3 slides) for the Dental Performance Intelligence solution, generated with PptxGenJS.",
+  "scripts": {
+    "build": "node build_pitch.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.0.0",
+    "sharp": "^0.34.0"
+  }
+}
