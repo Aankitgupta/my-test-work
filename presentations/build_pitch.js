@@ -1,5 +1,5 @@
 /**
- * Dental Performance Intelligence — prospect pitch deck (3 slides).
+ * Dental Performance Intelligence — solution story deck (3 slides).
  * Create-from-scratch workflow per the .cursor/skills/pptx skill.
  *
  * Requires (installed under /tmp/pptx-build): pptxgenjs, react, react-dom,
@@ -46,7 +46,7 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
   pres.defineLayout({ name: "WIDE", width: W, height: H });
   pres.layout = "WIDE";
   pres.author = "Performance Intelligence";
-  pres.company = "Dental Intelligence Partners";
+  pres.company = "Dental Performance Intelligence";
   pres.title = "Dental Performance Intelligence";
 
   const names = ["FiTrendingUp","FiCalendar","FiPieChart","FiDollarSign","FiHeart","FiAlertTriangle",
@@ -90,12 +90,12 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
   eyebrow(s1, "KEY CHALLENGES WE SEE EVERY DAY", 0.7, 3.72, C.mint);
 
   const challenges = [
-    ["FiTrendingUp", "Inconsistent productivity", "Provider output varies widely across locations"],
-    ["FiCalendar", "Scheduling & hygiene gaps", "Hidden gaps in hygiene utilization"],
-    ["FiPieChart", "Unclear production drivers", "Hard to see which procedures drive revenue"],
-    ["FiDollarSign", "Revenue leakage", "Adjustments quietly erode collections"],
-    ["FiHeart", "Passive patient engagement", "No proactive view of retention"],
-    ["FiAlertTriangle", "Reactive decisions", "Issues surface too late to act"],
+    ["FiTrendingUp", "Inconsistent productivity", "Provider output swings widely from location to location"],
+    ["FiCalendar", "Scheduling & hygiene gaps", "Unused hygiene capacity and open chairs go unnoticed"],
+    ["FiPieChart", "Unclear production drivers", "Hard to see which procedures actually drive revenue"],
+    ["FiDollarSign", "Revenue leakage", "Adjustments and write-offs quietly erode collections"],
+    ["FiHeart", "Passive patient engagement", "No early view of patients lapsing from preventive care"],
+    ["FiAlertTriangle", "Reactive decisions", "Performance issues surface weeks too late to act on"],
   ];
   {
     const x0 = 0.7, top = 4.12, cols = 3, gap = 0.28;
@@ -123,16 +123,16 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
   eyebrow(s2, "THE SOLUTION", 0.7, 0.5, C.teal);
   s2.addText("One connected dental performance intelligence ecosystem", {
     x: 0.68, y: 0.86, w: 12.2, h: 0.7, fontSize: 30, bold: true, color: C.ink2, fontFace: HEAD, align: "left", margin: 0 });
-  s2.addText("We unify clinical, operational, financial, and patient data into six integrated intelligence portfolios — turning isolated metrics into connected, organization-wide intelligence.", {
+  s2.addText("Six integrated portfolios unify clinical, operational, financial, and patient data — turning isolated metrics into connected, organization-wide intelligence.", {
     x: 0.7, y: 1.62, w: 11.6, h: 0.6, fontSize: 14, color: C.slate, fontFace: BODY, align: "left", margin: 0, lineSpacingMultiple: 1.04 });
 
   const portfolios = [
-    ["FiActivity", "Hygiene Intelligence", "Real-time utilization, scheduling efficiency & forecasting"],
-    ["FiUserCheck", "Dentist Productivity", "Links patient flow, clinical hours & true production drivers"],
-    ["FiLayers", "Procedure Intelligence", "Treatment mix & clinical trends by provider and location"],
-    ["FiDollarSign", "Financial Adjustment", "Transparency into production & collection adjustments"],
-    ["FiHeart", "Active Patient Intelligence", "Preventive engagement & long-term patient retention"],
-    ["FiZap", "Weekly Flash Monitoring", "Daily, weekly & MTD visibility for proactive control"],
+    ["FiActivity", "Hygiene Intelligence", "Real-time hygiene utilization, scheduling efficiency, and forecasting"],
+    ["FiUserCheck", "Dentist Productivity", "Connects patient flow, clinical hours, and true production drivers"],
+    ["FiLayers", "Procedure Intelligence", "Treatment mix and procedure trends by provider and location"],
+    ["FiDollarSign", "Financial Adjustment", "Transparency into production and collection adjustment behavior"],
+    ["FiHeart", "Active Patient Intelligence", "Preventive engagement tracking and long-term patient retention"],
+    ["FiZap", "Weekly Flash Monitoring", "Daily, weekly, and month-to-date visibility for proactive control"],
   ];
   {
     const x0 = 0.7, top = 2.4, cols = 3, gap = 0.34;
@@ -152,19 +152,19 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
   }
 
   // =====================================================================
-  // SLIDE 3 — Business Impact & Partnership (light + dark CTA band)
+  // SLIDE 3 — Business Impact & Strategic Value (light + outcome band)
   // =====================================================================
   let s3 = pres.addSlide();
   s3.background = { color: C.light };
   motif(s3, C.amber);
-  eyebrow(s3, "WHAT YOUR BUSINESS GAINS", 0.7, 0.48, C.teal);
+  eyebrow(s3, "BUSINESS IMPACT & STRATEGIC VALUE", 0.7, 0.48, C.teal);
   s3.addText("From operational visibility to predictable, scalable growth", {
     x: 0.68, y: 0.83, w: 12.2, h: 0.66, fontSize: 28, bold: true, color: C.ink2, fontFace: HEAD, align: "left", margin: 0 });
 
   const stats = [
     ["100%", "Operational coverage, clinical to financial"],
     ["6", "Integrated intelligence portfolios"],
-    ["15+", "Connected dashboards"],
+    ["15+", "Connected performance dashboards"],
     ["3", "Levels of decision intelligence"],
   ];
   {
@@ -182,42 +182,38 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
     });
   }
 
+  // outcome pillars — each with a one-line description
   const pillars = [
-    ["FiTrendingUp", "Operational Efficiency", ["Optimized chair utilization", "Faster disruption response"]],
-    ["FiAward", "Provider Performance", ["Standardized benchmarking", "Less performance variability"]],
-    ["FiShield", "Financial Integrity", ["Control over adjustments", "Revenue transparency"]],
-    ["FiHeart", "Clinical & Patient", ["Treatment-mix visibility", "Early retention signals"]],
+    ["FiTrendingUp", "Operational Efficiency", "Higher chair utilization, optimized schedules, and faster response to operational disruptions."],
+    ["FiAward", "Provider Performance", "Standardized benchmarking that reduces provider variability and clarifies efficiency vs. workload."],
+    ["FiShield", "Financial Integrity", "Tighter control of adjustment trends with full transparency into revenue-impacting activity."],
+    ["FiHeart", "Clinical & Patient", "Visibility into treatment mix, with early signals of declining preventive engagement."],
   ];
   {
-    const x0 = 0.7, top = 3.18, cols = 4, gap = 0.3;
+    const x0 = 0.7, top = 3.12, cols = 4, gap = 0.3;
     const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 2.0;
+    const cardH = 2.42;
     pillars.forEach((p, i) => {
       const cx = x0 + i * (cardW + gap);
       s3.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
         fill: { color: C.white }, line: { color: C.lightLine, width: 1 }, rectRadius: 0.08, shadow: shadow() });
-      iconCircle(s3, I[p[0]], cx + 0.28, top + 0.26, 0.56, C.tealDeep);
-      s3.addText(p[1], { x: cx + 0.96, y: top + 0.22, w: cardW - 1.1, h: 0.6, fontSize: 13.5,
+      iconCircle(s3, I[p[0]], cx + 0.3, top + 0.3, 0.58, C.tealDeep);
+      s3.addText(p[1], { x: cx + 1.0, y: top + 0.3, w: cardW - 1.18, h: 0.58, fontSize: 13.5,
         bold: true, color: C.ink2, fontFace: BODY, align: "left", valign: "middle", margin: 0 });
-      s3.addText(p[2].map((t) => ({ text: t, options: { bullet: true, breakLine: true } })),
-        { x: cx + 0.3, y: top + 0.95, w: cardW - 0.55, h: 0.95, fontSize: 11, color: C.slate,
-          fontFace: BODY, align: "left", margin: 0, paraSpaceAfter: 5 });
+      s3.addText(p[2], { x: cx + 0.3, y: top + 1.06, w: cardW - 0.58, h: 1.2, fontSize: 11,
+        color: C.slate, fontFace: BODY, align: "left", margin: 0, lineSpacingMultiple: 1.06 });
     });
   }
 
-  // CTA band (dark)
+  // closing outcome band (dark) — summary statement, no CTA
   {
-    const x = 0.7, y = 5.55, w = W - 1.4, h = 1.5;
+    const x = 0.7, y = 5.82, w = W - 1.4, h = 1.22;
     s3.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, fill: { color: C.ink }, rectRadius: 0.1, shadow: shadow() });
-    s3.addText("PARTNER WITH US", { x: x + 0.5, y: y + 0.22, w: 7, h: 0.3, fontSize: 12, bold: true,
-      color: C.mint, fontFace: BODY, charSpacing: 3, align: "left", margin: 0 });
-    s3.addText("Turn your operational data into measurable, optimized, predictable performance.", {
-      x: x + 0.5, y: y + 0.55, w: 8.0, h: 0.8, fontSize: 18, bold: true, color: C.white,
-      fontFace: HEAD, align: "left", margin: 0, lineSpacingMultiple: 1.0 });
-    const bx = x + w - 3.55, by = y + 0.46, bw = 3.05, bh = 0.6;
-    s3.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: bx, y: by, w: bw, h: bh, fill: { color: C.mint }, rectRadius: 0.3 });
-    s3.addText("Book a discovery session  \u2192", { x: bx, y: by, w: bw, h: bh, fontSize: 13, bold: true,
-      color: C.ink, fontFace: BODY, align: "center", valign: "middle", margin: 0 });
+    s3.addText("THE OUTCOME", { x, y: y + 0.18, w, h: 0.28, fontSize: 12, bold: true,
+      color: C.mint, fontFace: BODY, charSpacing: 3, align: "center", margin: 0 });
+    s3.addText("A scalable operational intelligence framework that makes dental operations measurable, optimized, and predictable.", {
+      x: x + 0.8, y: y + 0.5, w: w - 1.6, h: 0.6, fontSize: 17, bold: true, color: C.white,
+      fontFace: HEAD, align: "center", valign: "middle", margin: 0, lineSpacingMultiple: 1.0 });
   }
 
   const out = "dental-intelligence-pitch.pptx";
