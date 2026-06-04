@@ -1,14 +1,11 @@
 /**
- * Lumenore — Dental Performance Intelligence for DSOs (5-slide story deck).
- * Create-from-scratch workflow per the .cursor/skills/pptx skill.
+ * Lumenore — Dental Operations Intelligence (5-slide deck).
+ * Theme: white background, navy Title-Case headlines, cyan letter-spaced
+ * eyebrows, multi-color circle icons, colored card top-bars / header-bars,
+ * quote box, dark stat band, arrow-bullet lists.
  *
- * Story: Problem -> Solution (Lumenore) -> Data Integration Framework ->
- *        KPI Coverage by Source -> Business Impact.
- *
- * Design notes:
- *  - Single font family (Calibri) for portable, distortion-free rendering in
- *    PowerPoint / Google Slides (no serif-substitution reflow).
- *  - Standard LAYOUT_WIDE (13.3 x 7.5); generous text boxes + low density.
+ * Single font family (Calibri) for portable, distortion-free rendering in
+ * PowerPoint / Google Slides. Standard LAYOUT_WIDE (13.3 x 7.5).
  *
  * Requires (under /tmp/pptx-build): pptxgenjs, react, react-dom, react-icons,
  * sharp. Run with NODE_PATH=/tmp/pptx-build/node_modules.
@@ -20,17 +17,19 @@ const sharp = require("sharp");
 const Fi = require("react-icons/fi");
 
 const C = {
-  ink: "0A2A33", inkPanel: "123A44", teal: "0F8A8F", tealDeep: "0B5C63",
-  mint: "2DD4BF", amber: "F6B24B", light: "F2F8F9", white: "FFFFFF",
-  slate: "5E777C", ink2: "0E323B", lightLine: "DDEAEC", mutedDark: "9FB6BA",
+  navy: "1F3C88", navyDark: "13265F", cyan: "0EA5C4", ink: "1E293B",
+  slate: "64748B", white: "FFFFFF", bg: "FFFFFF", border: "E6EAF1",
+  cardSoft: "F7F9FC",
+  red: "EF4444", teal: "0EA5B8", orange: "F2922E", pink: "EC4899",
+  purple: "7C3AED", green: "10B981",
 };
 const FONT = "Calibri";
 const W = 13.3, H = 7.5;
-const shadow = () => ({ type: "outer", color: "0A2A33", blur: 8, offset: 3, angle: 135, opacity: 0.16 });
+const shadow = () => ({ type: "outer", color: "1F3C88", blur: 7, offset: 2, angle: 90, opacity: 0.1 });
 
 async function iconPng(name, color = "#FFFFFF", size = 256) {
   const svg = ReactDOMServer.renderToStaticMarkup(
-    React.createElement(Fi[name], { color, size: String(size), strokeWidth: 2 }));
+    React.createElement(Fi[name], { color, size: String(size), strokeWidth: 2.2 }));
   const buf = await sharp(Buffer.from(svg)).png().toBuffer();
   return "image/png;base64," + buf.toString("base64");
 }
@@ -40,218 +39,257 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
   pres.layout = "LAYOUT_WIDE";
   pres.author = "Lumenore";
   pres.company = "Lumenore";
-  pres.title = "Predict Risk. Prevent Churn. Power DSO Growth.";
+  pres.title = "Dental Operations Intelligence";
 
-  const names = ["FiTrendingDown","FiCalendar","FiPieChart","FiUsers","FiBarChart2",
-                 "FiUserMinus","FiLayers","FiMessageSquare","FiAward","FiHeart","FiZap",
-                 "FiActivity","FiDollarSign"];
+  const iconNames = ["FiTrendingDown","FiCalendar","FiSettings","FiUsers","FiBarChart2",
+                     "FiDollarSign","FiShield","FiZap","FiActivity","FiCpu"];
   const I = {};
-  for (const n of names) I[n] = await iconPng(n, "#FFFFFF");
+  for (const n of iconNames) I[n] = await iconPng(n, "#FFFFFF");
 
-  function iconCircle(slide, iconData, x, y, d, fill = C.teal) {
-    slide.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: fill }, shadow: shadow() });
-    const id = d * 0.52;
-    slide.addImage({ data: iconData, x: x + (d - id) / 2, y: y + (d - id) / 2, w: id, h: id });
-  }
-  const motif = (slide, color) =>
-    slide.addShape(pres.shapes.RECTANGLE, { x: 0, y: 0, w: 0.16, h: H, fill: { color } });
-  const eyebrow = (slide, text, x, y, color) =>
-    slide.addText(text, { x, y, w: 11, h: 0.32, fontSize: 13, bold: true, color,
+  const iconCircle = (slide, data, x, y, d, fill) => {
+    slide.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: fill } });
+    const id = d * 0.5;
+    slide.addImage({ data, x: x + (d - id) / 2, y: y + (d - id) / 2, w: id, h: id });
+  };
+  const eyebrow = (slide, text, x, y, size = 12) =>
+    slide.addText(text, { x, y, w: 9, h: 0.3, fontSize: size, bold: true, color: C.cyan,
       fontFace: FONT, charSpacing: 3, align: "left", margin: 0 });
+  const headline = (slide, runs, x, y, w, size) =>
+    slide.addText(runs, { x, y, w, h: 2.2, fontSize: size, bold: true, color: C.navy,
+      fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.02 });
 
   // =====================================================================
-  // SLIDE 1 — The Problem (dark)
+  // SLIDE 1 — THE PROBLEM
   // =====================================================================
   let s1 = pres.addSlide();
-  s1.background = { color: C.ink };
-  s1.addShape(pres.shapes.OVAL, { x: 10.5, y: -1.9, w: 4.6, h: 4.6, fill: { color: C.teal, transparency: 80 } });
-  s1.addShape(pres.shapes.OVAL, { x: 11.8, y: 0.55, w: 2.1, h: 2.1, fill: { color: C.mint, transparency: 86 } });
-  motif(s1, C.mint);
-  eyebrow(s1, "FOR MULTI-LOCATION DSOs", 0.7, 0.55, C.mint);
-  s1.addText([
-    { text: "It\u2019s not a data problem.", options: { breakLine: true } },
-    { text: "It\u2019s a timing problem.", options: {} },
-  ], { x: 0.68, y: 0.98, w: 11.5, h: 1.4, fontSize: 38, bold: true, color: C.white,
-       fontFace: FONT, align: "left", lineSpacingMultiple: 1.0, margin: 0 });
-  s1.addText(
-    "Most DSOs don\u2019t struggle with data \u2014 they struggle with timing. KPI reports arrive days, sometimes weeks, late. By the time leadership sees the numbers, the problem has already impacted revenue.",
-    { x: 0.7, y: 2.5, w: 9.7, h: 1.0, fontSize: 14.5, color: "C7D7DA", fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.08 });
-  eyebrow(s1, "BY THE TIME YOU SEE IT \u2014 WAS IT\u2026", 0.7, 3.74, C.mint);
-  const problems = [
-    ["FiTrendingDown", "Declining case acceptance", "Conversion slipping unnoticed across providers"],
-    ["FiCalendar", "Scheduling inefficiencies", "Open chairs and hygiene gaps draining capacity"],
-    ["FiPieChart", "Shifts in procedure mix", "High-value production quietly trending down"],
-    ["FiUsers", "Early patient churn", "At-risk patients lapsing before anyone reacts"],
+  s1.background = { color: C.bg };
+  eyebrow(s1, "DENTAL OPERATIONS INTELLIGENCE", 0.55, 0.4);
+  eyebrow(s1, "THE PROBLEM", 0.55, 0.68);
+  headline(s1, [
+    { text: "Most DSOs Don\u2019t", options: { breakLine: true } },
+    { text: "Struggle With Data.", options: { breakLine: true } },
+    { text: "They Struggle", options: { breakLine: true } },
+    { text: "With Timing.", options: {} },
+  ], 0.53, 1.2, 5.6, 33);
+  s1.addText("KPI reports arrive days \u2014 sometimes weeks \u2014 late. By the time leadership sees the numbers, the problem has already impacted revenue.",
+    { x: 0.55, y: 3.5, w: 5.3, h: 0.9, fontSize: 13, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.1 });
+  // quote card
+  s1.addShape(pres.shapes.RECTANGLE, { x: 0.55, y: 4.75, w: 5.45, h: 2.0,
+    fill: { color: C.cardSoft }, line: { color: C.border, width: 1 }, shadow: shadow() });
+  s1.addText("\u201D", { x: 0.7, y: 4.7, w: 0.8, h: 0.8, fontSize: 48, bold: true, color: C.cyan, fontFace: FONT, align: "left", valign: "top", margin: 0 });
+  s1.addText("By the time leadership sees the numbers, the problem has already impacted revenue.",
+    { x: 1.25, y: 5.0, w: 4.55, h: 0.9, fontSize: 14, italic: true, bold: true, color: C.navy, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.05 });
+  s1.addText("\u2014 Real pattern observed across multi-location DSOs",
+    { x: 1.25, y: 6.05, w: 4.55, h: 0.4, fontSize: 10.5, italic: true, color: C.slate, fontFace: FONT, align: "left", margin: 0 });
+
+  const probs = [
+    [C.red, "FiTrendingDown", "Declining Case Acceptance", "Treatment acceptance quietly drops location by location \u2014 invisible until the monthly report is already too late."],
+    [C.teal, "FiCalendar", "Scheduling Inefficiencies", "Empty hygiene slots bleed time-bound revenue every single day \u2014 and no one sees the pattern until end of month."],
+    [C.orange, "FiSettings", "Procedure Mix Shifts", "Gradual drifts in clinical activity erode margins before anyone flags the change in reporting."],
+    [C.pink, "FiUsers", "Early Patient Churn Signals", "Patients disengage weeks before they go inactive \u2014 but static KPIs never surface the early warning signs."],
+    [C.purple, "FiBarChart2", "Provider Performance Gaps", "Without real-time benchmarks, high and low performers look the same until revenue variance becomes impossible to ignore."],
+    [C.green, "FiDollarSign", "Revenue Risk Blind Spots", "Forecast gaps go undetected mid-month \u2014 leaving leadership with no room to course-correct before the period closes."],
   ];
   {
-    const x0 = 0.7, top = 4.12, cols = 4, gap = 0.3;
-    const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 2.5;
-    problems.forEach((c, i) => {
-      const cx = x0 + i * (cardW + gap);
-      s1.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
-        fill: { color: C.inkPanel }, line: { color: "1C4A55", width: 1 }, rectRadius: 0.07 });
-      iconCircle(s1, I[c[0]], cx + 0.3, top + 0.34, 0.62, C.teal);
-      s1.addText(c[1], { x: cx + 0.3, y: top + 1.14, w: cardW - 0.6, h: 0.6, fontSize: 14.5,
-        bold: true, color: C.white, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 0.98 });
-      s1.addText(c[2], { x: cx + 0.3, y: top + 1.74, w: cardW - 0.58, h: 0.66, fontSize: 11,
-        color: C.mutedDark, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.04 });
+    const x0 = 6.3, top = 0.5, cols = 2, gapX = 0.28, gapY = 0.26;
+    const cardW = (W - x0 - 0.3 - gapX) / cols, cardH = 2.0;
+    probs.forEach((p, i) => {
+      const cx = x0 + (i % cols) * (cardW + gapX);
+      const cy = top + Math.floor(i / cols) * (cardH + gapY);
+      s1.addShape(pres.shapes.RECTANGLE, { x: cx, y: cy, w: cardW, h: cardH,
+        fill: { color: C.white }, line: { color: C.border, width: 1 }, shadow: shadow() });
+      iconCircle(s1, I[p[1]], cx + 0.28, cy + 0.28, 0.62, p[0]);
+      s1.addText(p[2], { x: cx + 1.05, y: cy + 0.28, w: cardW - 1.25, h: 0.62, fontSize: 12.5,
+        bold: true, color: C.ink, fontFace: FONT, align: "left", valign: "middle", margin: 0, lineSpacingMultiple: 0.95 });
+      s1.addText(p[3], { x: cx + 0.3, y: cy + 1.02, w: cardW - 0.55, h: 0.9, fontSize: 10,
+        color: C.slate, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.03 });
     });
   }
 
   // =====================================================================
-  // SLIDE 2 — The Solution: Lumenore (light)
+  // SLIDE 2 — THE SOLUTION
   // =====================================================================
   let s2 = pres.addSlide();
-  s2.background = { color: C.light };
-  motif(s2, C.teal);
-  eyebrow(s2, "LUMENORE  \u00B7  UNIFIED DENTAL BI", 0.7, 0.5, C.teal);
-  s2.addText("Predict risk. Prevent churn. Power DSO growth.", {
-    x: 0.68, y: 0.86, w: 12.3, h: 0.7, fontSize: 30, bold: true, color: C.ink2, fontFace: FONT, align: "left", margin: 0 });
-  s2.addText("Lumenore unifies clinical, scheduling, and financial data into one BI layer \u2014 with real-time benchmarking, predictive analytics, and natural-language answers.", {
-    x: 0.7, y: 1.62, w: 11.9, h: 0.6, fontSize: 14, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.05 });
-  const caps = [
-    ["FiBarChart2", "Real-time benchmarking", "Compare dentists across locations as it happens", false],
-    ["FiTrendingDown", "Conversion & engagement", "Detect declining case acceptance and engagement early", false],
-    ["FiUserMinus", "Early churn signals", "Flag patients at risk of lapsing from care", false],
-    ["FiPieChart", "Revenue risk forecast", "See revenue exposure before month-end", false],
-    ["FiLayers", "One unified BI layer", "Clinical, scheduling & financial data in one place", false],
-    ["FiMessageSquare", "Ask in plain language", "\u201CWhy did Dr. A\u2019s revenue drop last month?\u201D", true],
+  s2.background = { color: C.bg };
+  eyebrow(s2, "THE SOLUTION", 0.55, 0.42);
+  s2.addText("Predict Risk. Prevent Churn. Power DSO Growth.", {
+    x: 0.53, y: 0.74, w: 12.4, h: 0.7, fontSize: 30, bold: true, color: C.navy, fontFace: FONT, align: "left", margin: 0 });
+  const sol = [
+    [C.teal, "FiShield", "Hygiene Intelligence", "Stop losing time-bound revenue.", "Real-time chair utilization and scheduling gap alerts \u2014 because every idle hygiene slot is revenue that can never be recovered after the day ends."],
+    [C.purple, "FiUsers", "Dentist Productivity", "Know why revenue dropped \u2014 not just that it did.", "Connects exam conversion, case mix, and clinical hours to production so you can answer: \u2018Why did Dr. A\u2019s revenue drop last month?\u2019 \u2014 instantly."],
+    [C.green, "FiSettings", "Procedure Intelligence", "Detect dangerous mix shifts before they compound.", "Full treatment-mix visibility across restorative, preventive, and specialty \u2014 with trailing 12-month trends that surface slow-moving clinical drift early."],
+    [C.orange, "FiDollarSign", "Financial Adjustments", "Close the gap between produced and collected.", "Separates operational vs. discretionary adjustments and flags rising patterns by location \u2014 turning an accounting task into active revenue control."],
+    [C.pink, "FiUsers", "Active Patient Portfolio", "Catch churn signals weeks before patients go inactive.", "Tracks preventive care frequency and engagement across locations \u2014 surfacing early patient disengagement long before it impacts hygiene production."],
+    [C.green, "FiZap", "Weekly Flash", "Course-correct now \u2014 not after month-end.", "Daily, weekly & MTD run-rate monitoring with projected end-of-month outcomes \u2014 so leadership can intervene while there\u2019s still time to change the result."],
   ];
   {
-    const x0 = 0.7, top = 2.38, cols = 3, gap = 0.34;
-    const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 2.12;
-    caps.forEach((p, i) => {
-      const cx = x0 + (i % cols) * (cardW + gap);
-      const cy = top + Math.floor(i / cols) * (cardH + gap);
-      s2.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: cy, w: cardW, h: cardH,
-        fill: { color: C.white }, line: { color: C.lightLine, width: 1 }, rectRadius: 0.09, shadow: shadow() });
-      iconCircle(s2, I[p[0]], cx + 0.32, cy + 0.32, 0.72, C.teal);
-      s2.addText(p[1], { x: cx + 0.32, y: cy + 1.16, w: cardW - 0.6, h: 0.4, fontSize: 15.5,
-        bold: true, color: C.ink2, fontFace: FONT, align: "left", margin: 0 });
-      s2.addText(p[2], { x: cx + 0.32, y: cy + 1.52, w: cardW - 0.62, h: 0.5, fontSize: 11.5,
-        italic: !!p[3], color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.02 });
+    const x0 = 0.6, top = 1.55, cols = 3, gapX = 0.3, gapY = 0.28;
+    const cardW = (W - 1.2 - gapX * (cols - 1)) / cols, cardH = 2.4;
+    sol.forEach((p, i) => {
+      const cx = x0 + (i % cols) * (cardW + gapX);
+      const cy = top + Math.floor(i / cols) * (cardH + gapY);
+      s2.addShape(pres.shapes.RECTANGLE, { x: cx, y: cy, w: cardW, h: cardH,
+        fill: { color: C.white }, line: { color: C.border, width: 1 }, shadow: shadow() });
+      s2.addShape(pres.shapes.RECTANGLE, { x: cx, y: cy, w: cardW, h: 0.09, fill: { color: p[0] } });
+      iconCircle(s2, I[p[1]], cx + 0.3, cy + 0.32, 0.56, p[0]);
+      s2.addText(p[2], { x: cx + 0.98, y: cy + 0.34, w: cardW - 1.15, h: 0.52, fontSize: 14,
+        bold: true, color: C.ink, fontFace: FONT, align: "left", valign: "middle", margin: 0 });
+      s2.addText(p[3], { x: cx + 0.3, y: cy + 1.0, w: cardW - 0.55, h: 0.45, fontSize: 10.5,
+        italic: true, bold: true, color: p[0], fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 0.98 });
+      s2.addText(p[4], { x: cx + 0.3, y: cy + 1.46, w: cardW - 0.55, h: 0.86, fontSize: 9.5,
+        color: C.slate, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.02 });
+    });
+  }
+  // stat band
+  {
+    const x = 0.6, y = 6.66, w = W - 1.2, h = 0.72, n = 5;
+    s2.addShape(pres.shapes.RECTANGLE, { x, y, w, h, fill: { color: C.navyDark } });
+    const colW = w / n;
+    const stats = [["100+", "KPIs Tracked"], ["50+", "Analytical Dimensions"], ["8+", "Intelligence Portfolios"], ["15+", "Connected Dashboards"], ["Near Real-Time", "Execution Monitoring"]];
+    stats.forEach((s, i) => {
+      const cx = x + i * colW;
+      if (i > 0) s2.addShape(pres.shapes.LINE, { x: cx, y: y + 0.14, w: 0, h: h - 0.28, line: { color: "FFFFFF", width: 0.75, transparency: 70 } });
+      s2.addText(s[0], { x: cx, y: y + 0.08, w: colW, h: 0.36, fontSize: i === 4 ? 13 : 18, bold: true, color: C.cyan, fontFace: FONT, align: "center", valign: "middle", margin: 0, wrap: false });
+      s2.addText(s[1], { x: cx, y: y + 0.44, w: colW, h: 0.24, fontSize: 9, color: "D7E0EC", fontFace: FONT, align: "center", valign: "middle", margin: 0 });
     });
   }
 
   // =====================================================================
-  // SLIDE 3 — Enterprise Data Integration Framework (dark)
+  // SLIDE 3 — ENTERPRISE DATA INTEGRATION (new theme)
   // =====================================================================
   let s3 = pres.addSlide();
-  s3.background = { color: C.ink };
-  s3.addShape(pres.shapes.OVAL, { x: 10.7, y: -2.0, w: 4.6, h: 4.6, fill: { color: C.teal, transparency: 82 } });
-  motif(s3, C.mint);
-  eyebrow(s3, "ENTERPRISE DATA INTEGRATION & INTELLIGENCE FRAMEWORK", 0.7, 0.5, C.mint);
-  s3.addText("Powering dental intelligence through unified data integration", {
-    x: 0.68, y: 0.86, w: 12.0, h: 0.7, fontSize: 29, bold: true, color: C.white, fontFace: FONT, align: "left", margin: 0 });
+  s3.background = { color: C.bg };
+  eyebrow(s3, "ENTERPRISE DATA INTEGRATION", 0.55, 0.42);
+  s3.addText("Powering Dental Intelligence Through Unified Data Integration", {
+    x: 0.53, y: 0.74, w: 12.4, h: 0.7, fontSize: 27, bold: true, color: C.navy, fontFace: FONT, align: "left", margin: 0 });
   s3.addText("Clinical, workforce, and financial systems integrated into one centralized intelligence ecosystem \u2014 a single source of truth across operations, providers, patients, workforce, and finance.", {
-    x: 0.7, y: 1.66, w: 11.6, h: 0.7, fontSize: 14, color: "C7D7DA", fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.06 });
+    x: 0.55, y: 1.62, w: 12.0, h: 0.6, fontSize: 13, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.06 });
   const sources = [
-    ["FiActivity", "Denticon", "CLINICAL & PRACTICE MANAGEMENT", "Patient activity, provider productivity, scheduling, procedures, and production performance across every location."],
-    ["FiUsers", "Paylocity", "WORKFORCE & LABOR", "Employee scheduling, payroll, attendance, and staffing utilization unified into the operational view."],
-    ["FiDollarSign", "Sage Intacct", "FINANCIAL & ACCOUNTING", "Operational profitability, expense structure, and EBITDA performance across the organization."],
+    [C.teal, "FiActivity", "Denticon", "CLINICAL & PRACTICE MANAGEMENT", "Patient activity, provider productivity, scheduling, procedures, and production performance across every location."],
+    [C.purple, "FiUsers", "Paylocity", "WORKFORCE & LABOR", "Employee scheduling, payroll, attendance, and staffing utilization unified into the operational view."],
+    [C.orange, "FiDollarSign", "Sage Intacct", "FINANCIAL & ACCOUNTING", "Operational profitability, expense structure, and EBITDA performance across the organization."],
   ];
   {
-    const x0 = 0.7, top = 2.62, cols = 3, gap = 0.4;
-    const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 3.35;
+    const x0 = 0.6, top = 2.6, cols = 3, gapX = 0.4;
+    const cardW = (W - 1.2 - gapX * (cols - 1)) / cols, cardH = 3.25;
     sources.forEach((s, i) => {
-      const cx = x0 + i * (cardW + gap);
-      s3.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
-        fill: { color: C.inkPanel }, line: { color: "1C4A55", width: 1 }, rectRadius: 0.08 });
-      iconCircle(s3, I[s[0]], cx + 0.42, top + 0.42, 0.82, C.teal);
-      s3.addText(s[1], { x: cx + 0.42, y: top + 1.42, w: cardW - 0.8, h: 0.5, fontSize: 20,
-        bold: true, color: C.white, fontFace: FONT, align: "left", margin: 0 });
-      s3.addText(s[2], { x: cx + 0.42, y: top + 1.94, w: cardW - 0.8, h: 0.3, fontSize: 11,
-        bold: true, color: C.mint, fontFace: FONT, charSpacing: 1, align: "left", margin: 0 });
-      s3.addText(s[3], { x: cx + 0.42, y: top + 2.34, w: cardW - 0.82, h: 0.9, fontSize: 12,
-        color: C.mutedDark, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.06 });
+      const cx = x0 + i * (cardW + gapX);
+      s3.addShape(pres.shapes.RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
+        fill: { color: C.white }, line: { color: C.border, width: 1 }, shadow: shadow() });
+      s3.addShape(pres.shapes.RECTANGLE, { x: cx, y: top, w: cardW, h: 0.1, fill: { color: s[0] } });
+      iconCircle(s3, I[s[1]], cx + 0.42, top + 0.42, 0.8, s[0]);
+      s3.addText(s[2], { x: cx + 0.42, y: top + 1.4, w: cardW - 0.8, h: 0.5, fontSize: 20,
+        bold: true, color: C.ink, fontFace: FONT, align: "left", margin: 0 });
+      s3.addText(s[3], { x: cx + 0.42, y: top + 1.92, w: cardW - 0.8, h: 0.3, fontSize: 10.5,
+        bold: true, color: s[0], fontFace: FONT, charSpacing: 1, align: "left", margin: 0 });
+      s3.addText(s[4], { x: cx + 0.42, y: top + 2.3, w: cardW - 0.82, h: 0.85, fontSize: 11.5,
+        color: C.slate, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.05 });
     });
   }
-  s3.addText("Denticon  +  Paylocity  +  Sage Intacct  \u2192  one centralized intelligence ecosystem", {
-    x: 0.7, y: 6.42, w: W - 1.4, h: 0.4, fontSize: 13.5, bold: true, color: C.mint,
-    fontFace: FONT, align: "center", margin: 0 });
+  s3.addText([
+    { text: "Denticon  +  Paylocity  +  Sage Intacct  ", options: { color: C.navy, bold: true } },
+    { text: "\u2192  one centralized intelligence ecosystem", options: { color: C.cyan, bold: true } },
+  ], { x: 0.6, y: 6.35, w: W - 1.2, h: 0.4, fontSize: 14, fontFace: FONT, align: "center", margin: 0 });
 
   // =====================================================================
-  // SLIDE 4 — Key KPIs & Intelligence Areas (light)
+  // SLIDE 4 — KEY KPIs & INTELLIGENCE AREAS (new theme)
   // =====================================================================
   let s4 = pres.addSlide();
-  s4.background = { color: C.light };
-  motif(s4, C.teal);
-  eyebrow(s4, "KEY KPIs & INTELLIGENCE AREAS", 0.7, 0.5, C.teal);
-  s4.addText("Connected metrics across every operational dimension", {
-    x: 0.68, y: 0.86, w: 12.3, h: 0.66, fontSize: 28, bold: true, color: C.ink2, fontFace: FONT, align: "left", margin: 0 });
+  s4.background = { color: C.bg };
+  eyebrow(s4, "KEY KPIs & INTELLIGENCE AREAS", 0.55, 0.42);
+  s4.addText("Connected Metrics Across Every Operational Dimension", {
+    x: 0.53, y: 0.74, w: 12.4, h: 0.7, fontSize: 27, bold: true, color: C.navy, fontFace: FONT, align: "left", margin: 0 });
   s4.addText("From clinical production to labor cost to EBITDA \u2014 every KPI measured and connected in one intelligence layer.", {
-    x: 0.7, y: 1.62, w: 11.9, h: 0.5, fontSize: 14, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.04 });
+    x: 0.55, y: 1.6, w: 12.0, h: 0.5, fontSize: 13, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.05 });
   const kpis = [
-    ["FiActivity", "Denticon", "Clinical & Practice Management",
-      ["Gross & Net Production", "Hygiene Utilization", "Provider Productivity", "Appointment & Scheduling Trends", "Procedure Mix Analysis", "Patient Visit Volume"]],
-    ["FiUsers", "Paylocity", "Workforce & Labor",
-      ["Employee Hours Tracking", "Labor Cost Analysis", "Productivity vs. Hours Analysis", "Attendance Trends"]],
-    ["FiDollarSign", "Sage Intacct", "Financial & Accounting",
-      ["Non-Doctor Labor %", "Lab %", "Supplies %", "EBITDA", "EBITDA %", "Revenue & Financial Trend Analysis"]],
+    [C.teal, "FiActivity", "Denticon", "CLINICAL & PRACTICE MGMT", ["Gross & Net Production", "Hygiene Utilization", "Provider Productivity", "Appointment & Scheduling Trends", "Procedure Mix Analysis", "Patient Visit Volume"]],
+    [C.purple, "FiUsers", "Paylocity", "WORKFORCE & LABOR", ["Employee Hours Tracking", "Labor Cost Analysis", "Productivity vs. Hours Analysis", "Attendance Trends"]],
+    [C.orange, "FiDollarSign", "Sage Intacct", "FINANCIAL & ACCOUNTING", ["Non-Doctor Labor %", "Lab %", "Supplies %", "EBITDA", "EBITDA %", "Revenue & Financial Trend Analysis"]],
   ];
   {
-    const x0 = 0.7, top = 2.3, cols = 3, gap = 0.4;
-    const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 4.5;
+    const x0 = 0.6, top = 2.3, cols = 3, gapX = 0.4;
+    const cardW = (W - 1.2 - gapX * (cols - 1)) / cols, cardH = 4.5;
     kpis.forEach((k, i) => {
-      const cx = x0 + i * (cardW + gap);
-      s4.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
-        fill: { color: C.white }, line: { color: C.lightLine, width: 1 }, rectRadius: 0.08, shadow: shadow() });
-      iconCircle(s4, I[k[0]], cx + 0.34, top + 0.34, 0.62, C.teal);
-      s4.addText(k[1], { x: cx + 1.1, y: top + 0.36, w: cardW - 1.3, h: 0.38, fontSize: 17,
-        bold: true, color: C.ink2, fontFace: FONT, align: "left", margin: 0 });
-      s4.addText(k[2].toUpperCase(), { x: cx + 1.1, y: top + 0.76, w: cardW - 1.3, h: 0.3, fontSize: 9.5,
-        bold: true, color: C.teal, fontFace: FONT, charSpacing: 1, align: "left", margin: 0 });
-      s4.addShape(pres.shapes.RECTANGLE, { x: cx + 0.34, y: top + 1.2, w: cardW - 0.68, h: 0.012, fill: { color: C.lightLine } });
-      s4.addText(k[3].map((t) => ({ text: t, options: { bullet: { code: "2022", indent: 14 }, breakLine: true } })),
-        { x: cx + 0.4, y: top + 1.38, w: cardW - 0.74, h: cardH - 1.6, fontSize: 12.5,
-          color: C.ink2, fontFace: FONT, align: "left", valign: "top", margin: 0, paraSpaceAfter: 8 });
+      const cx = x0 + i * (cardW + gapX);
+      s4.addShape(pres.shapes.RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
+        fill: { color: C.white }, line: { color: C.border, width: 1 }, shadow: shadow() });
+      s4.addShape(pres.shapes.RECTANGLE, { x: cx, y: top, w: cardW, h: 0.1, fill: { color: k[0] } });
+      iconCircle(s4, I[k[1]], cx + 0.34, top + 0.36, 0.6, k[0]);
+      s4.addText(k[2], { x: cx + 1.08, y: top + 0.36, w: cardW - 1.3, h: 0.36, fontSize: 17, bold: true, color: C.ink, fontFace: FONT, align: "left", margin: 0 });
+      s4.addText(k[3], { x: cx + 1.08, y: top + 0.74, w: cardW - 1.3, h: 0.28, fontSize: 9, bold: true, color: k[0], fontFace: FONT, charSpacing: 1, align: "left", margin: 0 });
+      s4.addShape(pres.shapes.RECTANGLE, { x: cx + 0.34, y: top + 1.22, w: cardW - 0.68, h: 0.014, fill: { color: C.border } });
+      k[4].forEach((t, j) => {
+        const iy = top + 1.45 + j * 0.5;
+        s4.addShape(pres.shapes.OVAL, { x: cx + 0.4, y: iy + 0.07, w: 0.12, h: 0.12, fill: { color: k[0] } });
+        s4.addText(t, { x: cx + 0.66, y: iy, w: cardW - 1.0, h: 0.46, fontSize: 12, color: C.ink, fontFace: FONT, align: "left", valign: "middle", margin: 0, lineSpacingMultiple: 0.95 });
+      });
     });
   }
 
   // =====================================================================
-  // SLIDE 5 — The Impact (light + outcome band)
+  // SLIDE 5 — BUSINESS OUTCOMES
   // =====================================================================
   let s5 = pres.addSlide();
-  s5.background = { color: C.light };
-  motif(s5, C.amber);
-  eyebrow(s5, "THE IMPACT", 0.7, 0.48, C.teal);
-  s5.addText("From static reports to predictive control", {
-    x: 0.68, y: 0.83, w: 12.3, h: 0.66, fontSize: 28, bold: true, color: C.ink2, fontFace: FONT, align: "left", margin: 0 });
-  s5.addText("A multi-location dental network replaced static KPI reports with interactive dashboards and predictive analytics \u2014 and now sees risk before it spreads network-wide.", {
-    x: 0.7, y: 1.58, w: 11.9, h: 0.6, fontSize: 14, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.05 });
-  const pillars = [
-    ["FiAward", "Provider-level risk, early", "Leadership spots risky performance patterns by provider"],
-    ["FiHeart", "Churn caught upstream", "Engagement drops flagged before network-wide impact"],
-    ["FiZap", "Real-time visibility", "Live dashboards replace days-late KPI reports"],
-    ["FiPieChart", "Revenue protected", "Revenue risk forecast before the month-end close"],
+  s5.background = { color: C.bg };
+  eyebrow(s5, "BUSINESS OUTCOMES", 0.55, 0.45);
+  headline(s5, [
+    { text: "What Changes", options: { breakLine: true } },
+    { text: "For Your DSO", options: {} },
+  ], 0.53, 0.85, 5.0, 32);
+  s5.addText("One multi-location dental network replaced static KPI reports with interactive dashboards and predictive analytics.", {
+    x: 0.55, y: 2.5, w: 4.7, h: 0.9, fontSize: 13, color: C.slate, fontFace: FONT, align: "left", margin: 0, lineSpacingMultiple: 1.1 });
+  // leadership card
+  s5.addShape(pres.shapes.RECTANGLE, { x: 0.55, y: 3.55, w: 4.85, h: 3.4,
+    fill: { color: C.cardSoft }, line: { color: C.border, width: 1 }, shadow: shadow() });
+  s5.addText("Leadership now:", { x: 0.85, y: 3.82, w: 4.3, h: 0.4, fontSize: 14, bold: true, color: C.navy, fontFace: FONT, align: "left", margin: 0 });
+  const lead = [
+    "Spots provider-level risk patterns early",
+    "Detects patient engagement drops in real time",
+    "Forecasts revenue risk before month-end closes",
+    "Advance Analytical data insights",
+    "AI Driven Q&A with data facilitated by chat engine",
+  ];
+  s5.addText(lead.flatMap((t) => ([
+    { text: "\u2192  ", options: { color: C.cyan, bold: true } },
+    { text: t, options: { color: C.ink, breakLine: true } },
+  ])), { x: 0.85, y: 4.35, w: 4.35, h: 2.5, fontSize: 11.5, fontFace: FONT, align: "left", valign: "top", margin: 0, paraSpaceAfter: 9, lineSpacingMultiple: 1.0 });
+
+  const outcomes = [
+    [C.teal, "FiBarChart2", "Operational Efficiency", [
+      ["Optimized chair utilization", "Fill scheduling gaps before the day starts \u2014 not after the revenue window has already closed."],
+      ["Real-time disruption detection", "Identify production shortfalls within 24 hours so managers can respond \u2014 not react weeks later."],
+      ["Consistent multi-site output", "Reduce location-to-location variance with shared benchmarks and daily operational accountability."]]],
+    [C.purple, "FiUsers", "Provider Performance", [
+      ["Benchmark dentists in real time", "Compare every provider on normalized metrics \u2014 production per hour, per visit, and per exam."],
+      ["Detect declining conversion early", "Catch drops in case acceptance and exam conversion before they silently erode monthly targets."],
+      ["Reduced performance variability", "Bring underperforming providers up with coaching backed by objective, location-benchmarked data."]]],
+    [C.pink, "FiUsers", "Patient & Revenue Risk", [
+      ["Early patient churn signals", "Detect declining preventive engagement weeks before patients go inactive \u2014 and act while you still can."],
+      ["Forecast revenue risk mid-month", "MTD run-rate projections tell you what month-end will look like while there\u2019s still time to change it."],
+      ["Unify clinical + financial data", "One BI layer connecting Denticon and Paylocity \u2014 so every question has a complete, cross-system answer."]]],
+    [C.orange, "FiCpu", "Strategic Intelligence", [
+      ["AI-narrative insights", "Conversational analytics translate KPIs into plain-language guidance \u2014 for every stakeholder level."],
+      ["Ask \u2018Why did revenue drop?\u2019", "Interactive dashboards let leadership drill into any anomaly instantly, without waiting for analyst reports."],
+      ["Trend-driven growth planning", "12-month trailing data aligns future hiring, capacity, and investment decisions with real demand signals."]]],
   ];
   {
-    const x0 = 0.7, top = 2.5, cols = 4, gap = 0.3;
-    const cardW = (W - 1.4 - gap * (cols - 1)) / cols;
-    const cardH = 2.5;
-    pillars.forEach((p, i) => {
-      const cx = x0 + i * (cardW + gap);
-      s5.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: top, w: cardW, h: cardH,
-        fill: { color: C.white }, line: { color: C.lightLine, width: 1 }, rectRadius: 0.08, shadow: shadow() });
-      iconCircle(s5, I[p[0]], cx + 0.3, top + 0.34, 0.62, C.tealDeep);
-      s5.addText(p[1], { x: cx + 0.3, y: top + 1.14, w: cardW - 0.58, h: 0.6, fontSize: 14,
-        bold: true, color: C.ink2, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 0.98 });
-      s5.addText(p[2], { x: cx + 0.3, y: top + 1.74, w: cardW - 0.58, h: 0.66, fontSize: 11,
-        color: C.slate, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 1.04 });
+    const x0 = 5.7, top = 0.5, cols = 2, gapX = 0.3, gapY = 0.3;
+    const cardW = (W - x0 - 0.3 - gapX) / cols, cardH = 3.15, headH = 0.5;
+    outcomes.forEach((o, i) => {
+      const cx = x0 + (i % cols) * (cardW + gapX);
+      const cy = top + Math.floor(i / cols) * (cardH + gapY);
+      s5.addShape(pres.shapes.RECTANGLE, { x: cx, y: cy, w: cardW, h: cardH,
+        fill: { color: C.cardSoft }, line: { color: C.border, width: 1 }, shadow: shadow() });
+      s5.addShape(pres.shapes.RECTANGLE, { x: cx, y: cy, w: cardW, h: headH, fill: { color: o[0] } });
+      s5.addImage({ data: I[o[1]], x: cx + 0.22, y: cy + 0.13, w: 0.24, h: 0.24 });
+      s5.addText(o[2], { x: cx + 0.58, y: cy, w: cardW - 0.7, h: headH, fontSize: 12.5, bold: true, color: C.white, fontFace: FONT, align: "left", valign: "middle", margin: 0 });
+      o[3].forEach((it, j) => {
+        const iy = cy + headH + 0.16 + j * 0.83;
+        s5.addShape(pres.shapes.OVAL, { x: cx + 0.24, y: iy + 0.05, w: 0.12, h: 0.12, fill: { color: o[0] } });
+        s5.addText(it[0], { x: cx + 0.46, y: iy - 0.02, w: cardW - 0.62, h: 0.26, fontSize: 10.5, bold: true, color: C.ink, fontFace: FONT, align: "left", margin: 0 });
+        s5.addText(it[1], { x: cx + 0.46, y: iy + 0.24, w: cardW - 0.64, h: 0.52, fontSize: 8.6, color: C.slate, fontFace: FONT, align: "left", valign: "top", margin: 0, lineSpacingMultiple: 0.98 });
+      });
     });
-  }
-  {
-    const x = 0.7, y = 5.45, w = W - 1.4, h = 1.42;
-    s5.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, fill: { color: C.ink }, rectRadius: 0.1, shadow: shadow() });
-    s5.addText("WITH LUMENORE", { x, y: y + 0.22, w, h: 0.28, fontSize: 12, bold: true,
-      color: C.mint, fontFace: FONT, charSpacing: 3, align: "center", margin: 0 });
-    s5.addText("Predict Risk.  Prevent Churn.  Power DSO Growth.", {
-      x: x + 0.6, y: y + 0.56, w: w - 1.2, h: 0.6, fontSize: 22, bold: true, color: C.white,
-      fontFace: FONT, align: "center", valign: "middle", margin: 0 });
   }
 
   const out = "dental-intelligence-pitch.pptx";
