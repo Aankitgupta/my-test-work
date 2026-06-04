@@ -15,6 +15,7 @@ const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
 const Fi = require("react-icons/fi");
+const addArchitecture = require("./arch_slide");
 
 const C = {
   navy: "1F3C88", navyDark: "13265F", cyan: "0EA5C4", ink: "1E293B",
@@ -190,6 +191,9 @@ async function iconPng(name, color = "#FFFFFF", size = 256) {
     { text: "Denticon  +  Paylocity  +  Sage Intacct  ", options: { color: C.navy, bold: true } },
     { text: "\u2192  one centralized intelligence ecosystem", options: { color: C.cyan, bold: true } },
   ], { x: 0.6, y: 6.35, w: W - 1.2, h: 0.4, fontSize: 14, fontFace: FONT, align: "center", margin: 0 });
+
+  // ---- Platform Architecture (inserted as slide 4) ----
+  await addArchitecture(pres, { FONT, W, H, iconPng });
 
   // =====================================================================
   // SLIDE 4 — KEY KPIs & INTELLIGENCE AREAS (new theme)
